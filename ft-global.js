@@ -1,7 +1,6 @@
 /* ---------------------------------------------------------
    Fluid Topics – Global JavaScript Add-on
-   Safe & optimized for all FT portals
-   Version: 1.1
+   Version: 1.2  (mermaid + plantuml copy-block fix added)
 ---------------------------------------------------------- */
 
 (function () {
@@ -18,11 +17,62 @@
         }
     }
 
+    /* ---------------------------------------------------------
+       Utility: Deep search inside ShadowRoots
+       (FluidTopics uses heavy shadow DOM → required)
+    ---------------------------------------------------------- */
+    function findElementsInShadowRoots(selector, root = document) {
+        const results = [];
+
+        function recursiveSearch(node) {
+            if (!node) return;
+
+            if (node.querySelectorAll) {
+                results.push(...node.querySelectorAll(selector));
+            }
+            if (node.shadowRoot) {
+                recursiveSearch(node.shadowRoot);
+            }
+            node.childNodes.forEach(recursiveSearch);
+        }
+
+        recursiveSearch(root);
+        return results;
+    }
+
+    /* ---------------------------------------------------------
+       NEW FEATURE:
+       Remove ft-copy-block wrappers for mermaid & plantUML
+    ---------------------------------------------------------- */
+    async function removeFtCopyBlockForMermaidAndPlantUML() {
+        const blocks = findElementsInShadowRoots("ft-copy-block");
+
+        blocks.forEach(block => {
+            const first = block.firstElementChild;
+
+            if (!first) return;
+
+            // Check if <pre> is mermaid or plantuml
+            if (
+                first.matches("pre.mermaid, pre[class*='mermaid'], pre.plantuml, pre[class*='plantuml']")
+            ) {
+                const parent = block.parentNode;
+                if (!parent) return;
+
+                // Move the <pre> out of the wrapper
+                parent.insertBefore(first, block);
+
+                // Remove the FT copy wrapper
+                block.remove();
+            }
+        });
+    }
+
     /* ---------------------------------------------
        GLOBAL CONFIG
     ---------------------------------------------- */
     const GLOBAL_SETTINGS = {
-        version: "1.1",
+        version: "1.2",
         enableHighlighting: true,
         highlightTerms: ["RDS", "sample", "clarification"],
     };
@@ -47,7 +97,6 @@
 
     /* ---------------------------------------------
        Safe text-based keyword highlighter
-       (does NOT break HTML tags)
     ---------------------------------------------- */
     function highlightKeywords() {
         if (!GLOBAL_SETTINGS.enableHighlighting) return;
@@ -69,22 +118,24 @@
         while ((node = walker.nextNode())) {
             if (!regex.test(node.nodeValue)) continue;
 
-            const span = document.createElement("span");
-            span.innerHTML = node.nodeValue.replace(regex, m =>
+            const wrapper = document.createElement("span");
+            wrapper.innerHTML = node.nodeValue.replace(regex, m =>
                 `<span class="ft-custom-highlight">${m}</span>`
             );
 
-            node.parentNode.replaceChild(span, node);
+            node.parentNode.replaceChild(wrapper, node);
         }
     }
 
     /* ---------------------------------------------
-       Trigger when a topic is opened
+       Trigger logic when a topic is opened
     ---------------------------------------------- */
     function registerTopicListener() {
-        document.addEventListener("ft-event-topic-opened", () => {
-            console.log("[FT-GLOBAL] Topic Loaded → Apply global logic");
+        document.addEventListener("ft-event-topic-opened", async () => {
+            console.log("[FT-GLOBAL] Topic Loaded → Running global logic");
+
             highlightKeywords();
+            await removeFtCopyBlockForMermaidAndPlantUML();
         });
     }
 
