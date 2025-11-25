@@ -1,6 +1,6 @@
 /* ---------------------------------------------------------
    Fluid Topics – Global JavaScript Add-on
-   Version: 1.2  (mermaid + plantuml copy-block fix added)
+   Version: 1.3  (fixed: highlightKeywords + testability)
 ---------------------------------------------------------- */
 
 (function () {
@@ -41,11 +41,13 @@
     }
 
     /* ---------------------------------------------------------
-       NEW FEATURE:
        Remove ft-copy-block wrappers for mermaid & plantUML
     ---------------------------------------------------------- */
     async function removeFtCopyBlockForMermaidAndPlantUML() {
+        console.log("[FT-GLOBAL] Running removeFtCopyBlockForMermaidAndPlantUML()");
+
         const blocks = findElementsInShadowRoots("ft-copy-block");
+        console.log("[FT-GLOBAL] Found ft-copy-block:", blocks.length);
 
         blocks.forEach(block => {
             const first = block.firstElementChild;
@@ -56,13 +58,12 @@
             if (
                 first.matches("pre.mermaid, pre[class*='mermaid'], pre.plantuml, pre[class*='plantuml']")
             ) {
+                console.log("[FT-GLOBAL] Removing wrapper for", first);
+
                 const parent = block.parentNode;
                 if (!parent) return;
 
-                // Move the <pre> out of the wrapper
                 parent.insertBefore(first, block);
-
-                // Remove the FT copy wrapper
                 block.remove();
             }
         });
@@ -72,33 +73,17 @@
        GLOBAL CONFIG
     ---------------------------------------------- */
     const GLOBAL_SETTINGS = {
-        version: "1.2",
+        version: "1.3",
         enableHighlighting: true,
         highlightTerms: ["RDS", "sample", "clarification"],
     };
 
     /* ---------------------------------------------
-       Inject global CSS only once
-    ---------------------------------------------- */
-    function injectGlobalCSS() {
-        if (document.getElementById("ft-global-style")) return;
-
-        const style = document.createElement("style");
-        style.id = "ft-global-style";
-        style.textContent = `
-            .ft-custom-highlight {
-                background: #ffeb3b;
-                padding: 2px 4px;
-                border-radius: 4px;
-            }
-        `;
-        document.head.appendChild(style);
-    }
-
-    /* ---------------------------------------------
-       Safe text-based keyword highlighter
+       Safe keyword highlighter (MISSING BEFORE!)
     ---------------------------------------------- */
     function highlightKeywords() {
+        console.log("[FT-GLOBAL] Running highlightKeywords()");
+
         if (!GLOBAL_SETTINGS.enableHighlighting) return;
 
         const article = document.querySelector("article");
@@ -128,6 +113,24 @@
     }
 
     /* ---------------------------------------------
+       Inject global CSS only once
+    ---------------------------------------------- */
+    function injectGlobalCSS() {
+        if (document.getElementById("ft-global-style")) return;
+
+        const style = document.createElement("style");
+        style.id = "ft-global-style";
+        style.textContent = `
+            .ft-custom-highlight {
+                background: #ffeb3b;
+                padding: 2px 4px;
+                border-radius: 4px;
+            }
+        `;
+        document.head.appendChild(style);
+    }
+
+    /* ---------------------------------------------
        Trigger logic when a topic is opened
     ---------------------------------------------- */
     function registerTopicListener() {
@@ -138,6 +141,12 @@
             await removeFtCopyBlockForMermaidAndPlantUML();
         });
     }
+
+    /* ---------------------------------------------
+       Expose test function so you can run it manually
+    ---------------------------------------------- */
+    window.FTGLOBAL = window.FTGLOBAL || {};
+    window.FTGLOBAL.removeFtCopyBlockForMermaidAndPlantUML = removeFtCopyBlockForMermaidAndPlantUML;
 
     /* ---------------------------------------------
        Initialize
