@@ -4,6 +4,6 @@
     border-radius: 4px;
 }
 
-ft-typography{
+ft-typography::part(title) {
     color: #ffeb3b !important;
 }
