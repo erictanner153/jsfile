@@ -1,0 +1,16 @@
+{
+  "name": "jsfile",
+  "version": "1.0.0",
+  "main": "function/ft-global.js",
+  "scripts": {
+    "build:css": "sass styles:compiled-styles",
+    "watch:css": "sass --watch styles:compiled-styles"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "description": "",
+  "devDependencies": {
+    "sass": "^1.94.2"
+  }
+}
