@@ -5,8 +5,12 @@
   font-size: 6rem !important;
 }
 
-ft-reader-topic-title section.title h3 {
+ft-reader-topic-title .title h3 {
   background: red;
+}
+
+.title h3 {
+  background: blue;
 }
 
 /*# sourceMappingURL=ft-global.css.map */
