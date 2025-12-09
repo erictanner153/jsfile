@@ -5,4 +5,8 @@
   font-size: 6rem !important;
 }
 
+ft-reader-topic-title section.title h2 {
+  background: red;
+}
+
 /*# sourceMappingURL=ft-global.css.map */
