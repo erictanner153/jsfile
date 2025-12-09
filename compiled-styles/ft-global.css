@@ -1,8 +1,16 @@
-/*.FT-application-content {*/
-/*    color: #ffeb3b !important;*/
-/*}*/
+.FT-application-content {
+    color: #ffeb3b !important;
+}
 #ihft2 h1 {
   font-size: 6rem !important;
+}
+
+ft-reader-topic-title .title h3 {
+  background: red;
+}
+
+.title h3 {
+  background: blue;
 }
 
 /*# sourceMappingURL=ft-global.css.map */
