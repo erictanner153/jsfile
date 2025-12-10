@@ -1,0 +1,152 @@
+color: var(--ft-custom-reader-content-text);
+
+margin-bottom: 1.2em;
+
+h1, h2, h3, h4, h5, h6 {
+  font-style: normal;
+  font-weight: 400;
+  margin-block-start: 0.5em;
+  overflow-wrap: break-word;
+}
+/*
+h1 {
+  font-size: 2.1em;
+}
+
+h2 {
+  font-size: 1.7em;
+}
+
+h3 {
+  font-size: 1.4em;
+}
+
+h4 {
+  font-size: 1.3em;
+}
+
+h5 {
+  font-size: 1.2em;
+}
+
+h6 {
+  font-size: 1.1em;
+}
+*/
+& ~ .analytics-container {
+    margin-top: 0;
+    margin-bottom: 0
+}
+
+/*.depth-1 {
+    margin-top: 4em
+}
+
+.depth-1::after {
+    content: "";
+    display: block;
+    height: 2px;
+    width: 100%;
+    margin: 1em 0;
+	background-color: var(--ft-custom-secondary);
+}
+*/
+
+h1 {
+    font-size: 2.671em;
+    font-weight: 300;
+    letter-spacing: .025em;
+  	word-break: break-word;
+	hyphens: auto;
+    margin-bottom: -10px;
+    /*color: #282832;*/
+}
+
+@media (max-width: 1279px) {
+    h1 {
+        font-size: 1.8em;
+    }
+}
+
+h2 {
+    font-size: 2em;
+    font-weight: 300;
+  	letter-spacing: -.01em;
+    line-height: 1.3;
+  	/*word-break: break-all;
+  	hyphens: auto;*/
+}
+
+@media (max-width: 1279px) {
+    h2 {
+        font-size: 1.6em;
+    }
+}
+
+h3 {
+    font-size: 1.5625em;
+	line-height: 1.4;
+	letter-spacing: -.01em;
+    font-weight: 300;
+}
+
+@media (max-width: 1279px) {
+    h3 {
+        font-size: 1.4em;
+    }
+}
+
+h4 {
+    font-size: 1.367em;
+    font-weight: 300
+}
+
+@media (max-width: 1279px) {
+    h4 {
+        font-size: 1.3em;
+    }
+}
+
+h5 {
+    font-size: 1.094em;
+    font-weight: 500;
+    letter-spacing: 0
+}
+
+@media (max-width: 1279px) {
+    h5 {
+        font-size: 1.2em;
+    }
+}
+
+h6 {
+    font-size: .9em;
+    font-weight: 600;
+    letter-spacing: 0
+}
+
+@media (max-width: 1279px) {
+    h6 {
+        font-size: 1.1em;
+    }
+}
+
+.sprint-newsletter h1 {
+    font-size: 2.1em;
+    padding-left: 1.7em
+}
+
+.sprint-newsletter h2 {
+    font-size: 1.7em;
+    padding-left: 2em
+}
+
+p {
+    font-family: 'Source Sans Pro',system-ui;
+    font-size: 1em;
+    color: #404040;
+    margin: 0.5em 0;
+    padding: 0;
+    line-height: 1.75em;
+    word-wrap: normal;
+}
