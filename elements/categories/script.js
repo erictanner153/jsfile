@@ -202,6 +202,13 @@ function initOne(wrapper) {
             de_DE: { id: 6361438475112 },
             labelId: 'tia.VideoTitle_1_6',
             descriptionLabelId: 'tia.VideoDescription_1_6'
+        },
+        {
+            categoryId: 'category4',
+            en_US: { id: 6361438475112 },
+            de_DE: { id: 6361438475112 },
+            labelId: 'tia.VideoTitle_1_6',
+            descriptionLabelId: 'tia.VideoDescription_1_6'
         }
     ];
 
