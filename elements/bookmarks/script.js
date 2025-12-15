@@ -1,12 +1,20 @@
 main();
+
 async function main() {
-    const bookmarksCount = await getBookmarksCount();
-    const bookmarksCountNumber = document.querySelector('.bookmarks-count__number');
-    bookmarksCountNumber.textContent = bookmarksCount;
+    const { user, map } = globalThis.FT_CTX || {};
+    if (!user || !map) {
+        console.warn("[bookmarks] Missing FT context (user/map).");
+        return;
+    }
+
+    const bookmarksCount = await getBookmarksCount(user, map);
+    const el = document.querySelector(".bookmarks-count__number");
+    if (el) el.textContent = String(bookmarksCount);
 }
-async function getBookmarksCount() {
+
+async function getBookmarksCount(user, map) {
     const FTAPI = new fluidtopics.FluidTopicsApi();
     let bookmarks = await FTAPI.listMyBookmarks(user.profile.id);
-    console.log(bookmarks); bookmarks = bookmarks.filter((bookmark) => bookmark.mapId === map.id);
+    bookmarks = (bookmarks || []).filter(b => b.mapId === map.id);
     return bookmarks.length;
 }
