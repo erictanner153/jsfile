@@ -1,34 +1,43 @@
 (() => {
     console.log("[videos] script.js loaded");
-    main().catch(err => console.error("[videos] main failed", err));
+    runAllInstances().catch(err => console.error("[videos] init failed", err));
 })();
 
-function deepFindShadowRootContaining(selector) {
-    // returns { host, root } where root is the ShadowRoot containing selector
+function findAllShadowRootsContaining(selector) {
+    const roots = [];
+
+    // light DOM
+    if (document.querySelector(selector)) roots.push(document);
+
+    // shadow DOM
     for (const host of document.querySelectorAll("*")) {
         if (!host.shadowRoot) continue;
-        const match = host.shadowRoot.querySelector(selector);
-        if (match) return { host, root: host.shadowRoot, match };
+        if (host.shadowRoot.querySelector(selector)) roots.push(host.shadowRoot);
     }
-    // also try light DOM
-    const light = document.querySelector(selector);
-    if (light) return { host: null, root: document, match: light };
-    return null;
+
+    return roots;
 }
 
-async function main() {
-    // Find the ShadowRoot where this component is rendered
-    const located = deepFindShadowRootContaining("#categories");
-    if (!located) {
-        console.warn("[videos] Could not find #categories (component not rendered yet)");
+async function runAllInstances() {
+    // Use a stable wrapper from your HTML
+    const roots = findAllShadowRootsContaining(".categories-container");
+
+    if (!roots.length) {
+        console.warn("[videos] No .categories-container found (component not rendered yet)");
         return;
     }
 
-    const root = located.root; // ShadowRoot or document
-    console.log("[videos] using root:", root);
+    console.log("[videos] instances found:", roots.length);
 
+    // Initialize each instance separately
+    for (const root of roots) {
+        initOne(root);
+    }
+}
+
+function initOne(root) {
     // ---------------------------
-    // Data
+    // Data (keep yours)
     // ---------------------------
     const videoCategories = [
         {
@@ -61,124 +70,24 @@ async function main() {
     ];
 
     const videos = [
-        {
-            categoryId: "category1",
-            en_US: { id: 6385608890112 },
-            de_DE: { id: 6385608890112 },
-            labelId: "tia.VideoTitle_1_5",
-            descriptionLabelId: "tia.VideoDescription_1_5"
-        },
-        {
-            categoryId: "category1",
-            en_US: { id: 6385258071112 },
-            de_DE: { id: 6385258948112 },
-            labelId: "tia.VideoTitle_1_1",
-            descriptionLabelId: "tia.VideoDescription_1_1"
-        },
-        {
-            categoryId: "category1",
-            en_US: { id: 6385314092112 },
-            de_DE: { id: 6385314796112 },
-            labelId: "tia.VideoTitle_1_2",
-            descriptionLabelId: "tia.VideoDescription_1_2"
-        },
-        {
-            categoryId: "category1",
-            en_US: { id: 6385313897112 },
-            de_DE: { id: 6385314795112 },
-            labelId: "tia.VideoTitle_1_3",
-            descriptionLabelId: "tia.VideoDescription_1_3"
-        },
-        {
-            categoryId: "category1",
-            en_US: { id: 6385258763112 },
-            de_DE: { id: 6385260417112 },
-            labelId: "tia.VideoTitle_1_4",
-            descriptionLabelId: "tia.VideoDescription_1_4"
-        },
-        {
-            categoryId: "category2",
-            en_US: { id: 6188401618001 },
-            de_DE: { id: 6188401618001 },
-            labelId: "tia.VideoTitle_2_1",
-            descriptionLabelId: "tia.VideoDescription_2_1"
-        },
-        {
-            categoryId: "category2",
-            en_US: { id: 6144858930001 },
-            de_DE: { id: 6144858930001 },
-            labelId: "tia.VideoTitle_2_2",
-            descriptionLabelId: "tia.VideoDescription_2_2"
-        },
-        {
-            categoryId: "category2",
-            en_US: { id: 6129694127001 },
-            de_DE: { id: 6129694127001 },
-            labelId: "tia.VideoTitle_2_3",
-            descriptionLabelId: "tia.VideoDescription_2_3"
-        },
-        {
-            categoryId: "category2",
-            en_US: { id: 6187316175001 },
-            de_DE: { id: 6187316175001 },
-            labelId: "tia.VideoTitle_2_4",
-            descriptionLabelId: "tia.VideoDescription_2_4"
-        },
-        {
-            categoryId: "category2",
-            en_US: { id: 6189530731001 },
-            de_DE: { id: 6189530731001 },
-            labelId: "tia.VideoTitle_2_5",
-            descriptionLabelId: "tia.VideoDescription_2_5"
-        },
-        {
-            categoryId: "category2",
-            en_US: { id: 6130392312001 },
-            de_DE: { id: 6130392312001 },
-            labelId: "tia.VideoTitle_2_6",
-            descriptionLabelId: "tia.VideoDescription_2_6"
-        },
-        {
-            categoryId: "category3",
-            en_US: { id: 4867852950001 },
-            de_DE: { id: 4867852950001 },
-            labelId: "tia.VideoTitle_3_1",
-            descriptionLabelId: "tia.VideoDescription_3_1"
-        },
-        {
-            categoryId: "category3",
-            en_US: { id: 4663888973001 },
-            de_DE: { id: 4663888973001 },
-            labelId: "tia.VideoTitle_3_2",
-            descriptionLabelId: "tia.VideoDescription_3_2"
-        },
-        {
-            categoryId: "category3",
-            en_US: { id: 5371027180001 },
-            de_DE: { id: 5371027180001 },
-            labelId: "tia.VideoTitle_3_3",
-            descriptionLabelId: "tia.VideoDescription_3_3"
-        },
-        {
-            categoryId: "category3",
-            en_US: { id: 6361438475112 },
-            de_DE: { id: 6361438475112 },
-            labelId: "tia.VideoTitle_1_6",
-            descriptionLabelId: "tia.VideoDescription_1_6"
-        }
+        // ... keep your big list here ...
     ];
 
     const accountId = "1813624294001";
     const guid = "f83fb7f6-75c0-411c-872c-ab6095a19211";
 
     // ---------------------------
-    // DOM (scoped to ShadowRoot!)
+    // DOM scoped to THIS component
     // ---------------------------
-    const categoriesDiv = root.querySelector("#categories");
-    const iFrameContainer = root.querySelector("#iframe-container");
+    // IMPORTANT: query inside this root (ShadowRoot or document)
+    const wrapper = root.querySelector(".categories-container");
+    if (!wrapper) return;
+
+    const categoriesDiv = wrapper.querySelector("#categories");
+    const iFrameContainer = wrapper.querySelector("#iframe-container");
 
     if (!categoriesDiv || !iFrameContainer) {
-        console.warn("[videos] Missing #categories or #iframe-container in component HTML");
+        console.warn("[videos] Missing #categories or #iframe-container in this instance");
         return;
     }
 
@@ -188,35 +97,22 @@ async function main() {
     function getLocaleKeyOfObject(obj) {
         const currentUiLocaleKey = window?.FluidTopicsI18nService?.currentUiLocale?.replace("-", "_");
         if (obj?.[currentUiLocaleKey]) return currentUiLocaleKey;
-        return "en_US"; // fallback language
+        return "en_US";
     }
 
     function clearCategories() {
         categoriesDiv.innerHTML = "";
     }
 
-    function onSelectCategory(category) {
-        [...categoriesDiv.children].forEach(c => {
-            c.classList.toggle("active", c.id === category.id);
-        });
-        showVideosOfCategory(category.id);
-    }
-
-    function createCategory(category) {
-        const div = root.ownerDocument.createElement("div");
-        div.id = category.id;
-        div.classList.add("category");
-
-        const localeKey = getLocaleKeyOfObject(category);
-        div.textContent = category[localeKey].title;
-
-        div.addEventListener("click", () => onSelectCategory(category));
-        categoriesDiv.appendChild(div);
-        return div;
+    function createLocalizedLabel(contextAndKeyString) {
+        const [context, key] = contextAndKeyString.split(".");
+        const span = document.createElement("span");
+        span.innerHTML = window.FluidTopicsCustomI18nService.resolveMessage(context, key);
+        return span;
     }
 
     function createVideoIFrame(videoId) {
-        const iframe = root.ownerDocument.createElement("iframe");
+        const iframe = document.createElement("iframe");
         iframe.src = `https://players.brightcove.net/${accountId}/${guid}_default/index.html?videoId=${videoId}`;
         iframe.classList.add("video-iframe");
         iframe.setAttribute("allowfullscreen", "");
@@ -225,41 +121,34 @@ async function main() {
         return iframe;
     }
 
-    function createLocalizedLabel(contextAndKeyString) {
-        const [context, key] = contextAndKeyString.split(".");
-        const span = root.ownerDocument.createElement("span");
-        span.innerHTML = window.FluidTopicsCustomI18nService.resolveMessage(context, key);
-        return span;
-    }
-
     function createVideoCard(video, localeKey) {
-        const link = root.ownerDocument.createElement("a");
+        const link = document.createElement("a");
         link.href = `https://players.brightcove.net/${accountId}/${guid}_default/index.html?videoId=${video[localeKey].id}`;
 
-        const card = root.ownerDocument.createElement("div");
+        const card = document.createElement("div");
         card.className = "video-card";
         link.appendChild(card);
 
-        const col = root.ownerDocument.createElement("div");
+        const col = document.createElement("div");
         card.appendChild(col);
 
-        const imgWrap = root.ownerDocument.createElement("div");
+        const imgWrap = document.createElement("div");
         col.appendChild(imgWrap);
 
         let media;
         if (video[localeKey].thumbnailUrl) {
-            media = root.ownerDocument.createElement("img");
+            media = document.createElement("img");
             media.src = video[localeKey].thumbnailUrl;
         } else {
             media = createVideoIFrame(video[localeKey].id);
         }
         imgWrap.appendChild(media);
 
-        const textWrap = root.ownerDocument.createElement("div");
+        const textWrap = document.createElement("div");
         col.appendChild(textWrap);
 
-        textWrap.appendChild(createLocalizedLabel(video.labelId));
-        textWrap.appendChild(createLocalizedLabel(video.descriptionLabelId));
+        if (video.labelId) textWrap.appendChild(createLocalizedLabel(video.labelId));
+        if (video.descriptionLabelId) textWrap.appendChild(createLocalizedLabel(video.descriptionLabelId));
 
         return link;
     }
@@ -278,10 +167,31 @@ async function main() {
         }
     }
 
+    function onSelectCategory(category) {
+        [...categoriesDiv.children].forEach(c => {
+            c.classList.toggle("active", c.id === category.id);
+        });
+        showVideosOfCategory(category.id);
+    }
+
+    function createCategory(category) {
+        const div = document.createElement("div");
+        div.id = category.id;
+        div.classList.add("category");
+
+        const localeKey = getLocaleKeyOfObject(category);
+        div.textContent = category[localeKey].title;
+
+        div.addEventListener("click", () => onSelectCategory(category));
+        categoriesDiv.appendChild(div);
+    }
+
     // ---------------------------
-    // Run
+    // Run this instance
     // ---------------------------
     clearCategories();
     videoCategories.forEach(createCategory);
     onSelectCategory(videoCategories[0]);
+
+    console.log("[videos] initialized one instance");
 }
