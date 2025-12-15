@@ -1,0 +1,136 @@
+.categories-container {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+}
+.categories {
+    width: 100%;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+}
+
+.category {
+    text-align: center;
+    cursor: pointer;
+    color: white;
+    width: 100%;
+    padding: 8px;
+    border-bottom: 2px solid #737389;
+}
+.category:hover {
+    background-color: #001134;
+}
+.category.active {
+    border-radius: 8px 8px 0 0;
+    border-bottom: 2px solid #00ffb9;
+}
+
+.iframe-container {
+    width: 100%;
+    display: grid;
+    justify-content: space-around;
+    padding-top: 16px;
+    padding-bottom: 16px;
+    box-sizing: border-box;
+    /*border-radius: 0 0 8px 8px;*/
+    grid-gap: 16px;
+    grid-template-columns: repeat(auto-fill, 380px);
+}
+.video-iframe {
+    width: 380px;
+    height: 218px;
+    border: 0
+}
+
+/*
+.iframe-container {
+  display: grid;
+  grid-gap: 16px;
+  grid-template-columns: repeat(auto-fill, 304px);
+  justify-content: space-between;
+  box-sizing: border-box;
+}
+
+.iframe-columns-container {
+  width: 100%;
+  display: grid;
+  grid-gap: 16px;
+  grid-template-columns: repeat(auto-fill, 320px);
+  justify-content: space-between;
+}
+
+.iframe-column-container {
+  width: 304px;
+  display: flex;
+  flex-direction: column;
+  background-color: #111111;
+  border-radius: 4px;
+}*/
+
+.video-card {
+    flex-grow: 1;
+    max-width: 380px;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    background-color: #23233C;
+    border-radius: 4px;
+    font-family: Siemens Sans, Siemens Sans, Arial, Helvetica, sans-serif;
+
+}
+
+.video-card > div {
+    flex-grow: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    padding: 16px;
+    color: white;
+}
+
+.video-card > div > div:first-child {
+    height: 240px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    justify-items: center;
+    background-color: #262648;
+}
+
+.video-card > div > div:nth-child(2) {
+    flex-grow: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: start;
+    padding: 16px 0 0 0;
+    /*min-height: 88px;*/
+}
+
+.video-card > div > div:nth-child(2) > span:first-child {
+    min-height: 32px;
+    font-size: 16px;
+    line-height: 24px;
+    font-weight: 700;
+}
+.video-card > div > div:nth-child(2) > span:nth-child(2) {
+    font-size: 14px;
+    line-height: 20px;
+    font-weight: 400;
+    text-align: start;
+}
+
+.video-card > div > div:nth-child(2) .learn-more {
+    padding-top: 16px;
+}
+.video-card > div > div:nth-child(2) .learn-more span {
+    color: var(--ft-theme-secondary);
+    min-height: 32px;
+    font-size: 14px;
+    line-height: 28px;
+    text-align: start;
+}
+
+a:has(div.video-card) {
+    text-decoration: none;
+}
