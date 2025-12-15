@@ -6,7 +6,8 @@ async function main() {
         console.warn("[bookmarks] Missing FT context (user/map).");
         return;
     }
-
+    console.log('user', user);
+    console.log('map', map);
     const bookmarksCount = await getBookmarksCount(user, map);
     const el = document.querySelector(".bookmarks-count__number");
     if (el) el.textContent = String(bookmarksCount);
