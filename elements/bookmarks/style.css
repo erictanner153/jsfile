@@ -1,0 +1,18 @@
+/*
+Bookmarks count DOM structure :
+bookmarks-count
+|_ bookmarks-count__number
+*/
+
+.bookmarks-count__number {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 10px;
+    height: 10px;
+    padding: 0.2rem;
+    background-color: var(--ft-theme-secondary);
+    font-size: 10px;
+    color: #fff;
+    border-radius: 50%;
+}
