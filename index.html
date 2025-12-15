@@ -1,0 +1,101 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>My GitHub Pages Site</title>
+    <meta name="description" content="A simple GitHub Pages site." />
+    <style>
+        :root { color-scheme: light dark; }
+        body {
+            margin: 0;
+            font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+            line-height: 1.5;
+        }
+        .wrap {
+            max-width: 860px;
+            margin: 0 auto;
+            padding: 64px 20px;
+        }
+        header {
+            display: flex;
+            gap: 16px;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            margin-bottom: 28px;
+        }
+        .card {
+            border: 1px solid rgba(127,127,127,.25);
+            border-radius: 16px;
+            padding: 22px;
+            box-shadow: 0 8px 20px rgba(0,0,0,.06);
+        }
+        a { text-decoration: none; }
+        a:hover { text-decoration: underline; }
+        code {
+            padding: 2px 6px;
+            border-radius: 8px;
+            background: rgba(127,127,127,.15);
+        }
+        ul { margin: 10px 0 0 18px; }
+        footer { margin-top: 28px; opacity: .75; font-size: 14px; }
+        .btns { display: flex; gap: 10px; flex-wrap: wrap; }
+        .btn {
+            display: inline-block;
+            padding: 10px 14px;
+            border-radius: 12px;
+            border: 1px solid rgba(127,127,127,.35);
+        }
+    </style>
+</head>
+<body>
+<div class="wrap">
+    <header>
+        <h1 style="margin:0">✅ GitHub Pages is working</h1>
+        <div class="btns">
+            <a class="btn" href="https://github.com/" target="_blank" rel="noreferrer">GitHub</a>
+            <a class="btn" href="#" id="repoLink">Your repo</a>
+        </div>
+    </header>
+
+    <main class="card">
+        <p style="margin-top:0">
+            If you were seeing “does not contain the requested file”, it usually means:
+        </p>
+        <ul>
+            <li>No <code>index.html</code> at the published root.</li>
+            <li>Wrong casing (must be <code>index.html</code>, not <code>Index.html</code>).</li>
+            <li>Pages is set to publish from a different branch/folder.</li>
+        </ul>
+
+        <h2>Next steps</h2>
+        <ul>
+            <li>Put this file in the folder GitHub Pages publishes from (repo root or <code>/docs</code>).</li>
+            <li>Commit + push.</li>
+            <li>In GitHub: <strong>Settings → Pages</strong> confirm Source (branch + folder).</li>
+        </ul>
+
+        <p style="margin-bottom:0">
+            Edit this page and redeploy anytime.
+        </p>
+    </main>
+
+    <footer>
+        <span id="year"></span> • Made with plain HTML for GitHub Pages.
+    </footer>
+</div>
+
+<script>
+    document.getElementById("year").textContent = new Date().getFullYear();
+    // Best-effort repo link when hosted on github.io
+    const host = location.hostname; // e.g. user.github.io
+    const path = location.pathname.split("/").filter(Boolean); // [repo] for project pages
+    const user = host.endsWith("github.io") ? host.replace(".github.io", "") : null;
+    const repo = path.length ? path[0] : null;
+    const repoUrl = (user && repo) ? `https://github.com/${user}/${repo}` : "https://github.com/";
+    const a = document.getElementById("repoLink");
+    a.href = repoUrl;
+</script>
+</body>
+</html>
