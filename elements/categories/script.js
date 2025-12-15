@@ -75,6 +75,15 @@ function initOne(wrapper) {
             it_IT: { title: "Ulteriori approfondimenti" },
             zh_CN: { title: "更多见解" }
         },
+        {
+            id: 'category4',
+            en_US: { title: "Test" },
+            de_DE: { title: "Test" },
+            es_ES: { title: "Test" },
+            fr_FR: { title: "Test" },
+            it_IT: { title: "Test" },
+            zh_CN: { title: "Test" }
+        },
     ];
 
 // maintain 'labelId' & 'descriptionLabelId' in xml translations / "custom-xx-XX-messages.xml"
