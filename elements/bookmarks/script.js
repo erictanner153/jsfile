@@ -1,14 +1,30 @@
-main();
+(() => {
+    // Always show something immediately
+    try { console.log("[bookmarks] script.js loaded"); } catch (_) {}
+
+    // Catch async errors too
+    window.addEventListener?.("error", (e) => console.error("[bookmarks] window error", e?.error || e));
+    window.addEventListener?.("unhandledrejection", (e) => console.error("[bookmarks] unhandledrejection", e?.reason || e));
+
+    main().catch(err => console.error("[bookmarks] main failed", err));
+})();
 
 async function main() {
-    const { user, map } = globalThis.FT_CTX || {};
+    const ctx = globalThis.FT_CTX;
+    console.log("[bookmarks] FT_CTX =", ctx);
+
+    const { user, map } = ctx || {};
     if (!user || !map) {
         console.warn("[bookmarks] Missing FT context (user/map).");
         return;
     }
-    console.log('user', user);
-    console.log('map', map);
+
+    console.log("[bookmarks] user =", user);
+    console.log("[bookmarks] map  =", map);
+
     const bookmarksCount = await getBookmarksCount(user, map);
+    console.log("[bookmarks] count =", bookmarksCount);
+
     const el = document.querySelector(".bookmarks-count__number");
     if (el) el.textContent = String(bookmarksCount);
 }
