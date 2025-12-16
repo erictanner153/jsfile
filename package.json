@@ -5,7 +5,8 @@
   "scripts": {
     "build:css": "sass styles:compiled-styles",
     "watch:css": "sass --watch styles:compiled-styles",
-    "build:less": "lessc styles/topic.less compiled-styles/topic.css"
+    "build:less": "less-watch-compiler styles compiled-styles",
+    "watch:less": "less-watch-compiler styles compiled-styles --watch --clean-css"
   },
   "keywords": [],
   "author": "",
@@ -13,6 +14,7 @@
   "description": "",
   "devDependencies": {
     "less": "^4.5.1",
+    "less-watch-compiler": "^1.17.5",
     "sass": "^1.94.2"
   }
 }

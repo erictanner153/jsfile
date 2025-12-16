@@ -1,9 +1,17 @@
-function loadGlobalCssFile() {
-  const link = document.createElement('link');
-  link.rel = 'stylesheet';
-  link.href = 'https://erictanner153.github.io/jsfile/compiled-styles/topic.css'; // change to your CSS URL
-  link.media = 'all';
-  document.head.appendChild(link);
-}
+// Topic content scripts -> Custom script
+export default function loadTopicCss({ container }) {
+    const cssUrl = "https://erictanner153.github.io/jsfile/compiled-styles/topic.css";
+    const id = "external-topic-css-erictanner153";
 
-loadGlobalCssFile();
+    const doc = container?.ownerDocument || document;
+
+    // avoid adding it multiple times (navigation between topics)
+    if (doc.getElementById(id)) return;
+
+    const link = doc.createElement("link");
+    link.id = id;
+    link.rel = "stylesheet";
+    link.href = cssUrl;
+
+    doc.head.appendChild(link);
+}
