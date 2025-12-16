@@ -1,17 +1,23 @@
 // Topic content scripts -> Custom script
 export default function loadTopicCss({ container }) {
-    const cssUrl = "https://erictanner153.github.io/jsfile/compiled-styles/topic.css";
-    const id = "external-topic-css-erictanner153";
+    const cssUrls = [
+        "https://erictanner153.github.io/jsfile/compiled-styles/topic.css",
+        "https://erictanner153.github.io/jsfile/compiled-styles/title.css" // <-- put your 2nd URL here
+    ];
 
     const doc = container?.ownerDocument || document;
 
-    // avoid adding it multiple times (navigation between topics)
-    if (doc.getElementById(id)) return;
+    cssUrls.forEach((href, i) => {
+        const id = `external-topic-css-erictanner153-${i}`;
 
-    const link = doc.createElement("link");
-    link.id = id;
-    link.rel = "stylesheet";
-    link.href = cssUrl;
+        // avoid adding it multiple times (navigation between topics)
+        if (doc.getElementById(id)) return;
 
-    doc.head.appendChild(link);
+        const link = doc.createElement("link");
+        link.id = id;
+        link.rel = "stylesheet";
+        link.href = href;
+
+        doc.head.appendChild(link);
+    });
 }
