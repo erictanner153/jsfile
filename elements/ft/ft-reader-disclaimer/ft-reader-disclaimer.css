@@ -1,0 +1,14 @@
+#disclaimerContainer {
+    display: none;
+    padding: 4px 8px 4px 8px;
+    background-color: var(--ft-custom-reader-header-info-background);
+    border-radius: 4px;
+}
+
+#disclaimerContainer span {
+    color: var(--ft-custom-reader-header-info-text);
+    font-weight: 500;
+    overflow-wrap: break-word;
+    white-space: normal;
+    font-size: 0.8em;
+}

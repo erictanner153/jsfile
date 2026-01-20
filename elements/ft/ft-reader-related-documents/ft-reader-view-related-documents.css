@@ -1,0 +1,13 @@
+.count-container {
+    background-color: var(--ft-theme-secondary);
+    color: #fff;
+    padding: 0.2rem;
+    display: inline-block;
+    border-radius: 50%;
+    width: 10px;
+    height: 10px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 10px;
+}

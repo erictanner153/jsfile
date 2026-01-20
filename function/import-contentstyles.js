@@ -1,23 +1,59 @@
 // Topic content scripts -> Custom script
-export default function loadTopicCss({ container }) {
+export default function loadTopicCss(map, topic, container) {
     const cssUrls = [
         "https://erictanner153.github.io/jsfile/compiled-styles/topic.css",
-        "https://erictanner153.github.io/jsfile/compiled-styles/title.css" // <-- put your 2nd URL here
+        "https://erictanner153.github.io/jsfile/compiled-styles/title.css",
     ];
 
-    const doc = container?.ownerDocument || document;
+    const doc = (container && container.ownerDocument) || document;
 
-    cssUrls.forEach((href, i) => {
-        const id = `external-topic-css-erictanner153-${i}`;
+    const buildImportCss = (urls) =>
+        urls.map((u) => `@import url("${u}");`).join("\n");
 
-        // avoid adding it multiple times (navigation between topics)
-        if (doc.getElementById(id)) return;
+    // Inject a <style> with @import rules into the component's shadowRoot
+    const injectImportsIntoShadow = (hostEl, styleId, urls) => {
+        const root = hostEl?.shadowRoot;
+        if (!root) return;
 
-        const link = doc.createElement("link");
-        link.id = id;
-        link.rel = "stylesheet";
-        link.href = href;
+        // Avoid duplicates
+        if (root.getElementById(styleId)) return;
 
-        doc.head.appendChild(link);
-    });
+        const styleEl = doc.createElement("style");
+        styleEl.id = styleId;
+
+        // IMPORTANT: @import must come before any other CSS rules in this <style>
+        styleEl.textContent = buildImportCss(urls);
+
+        root.appendChild(styleEl);
+    };
+
+    const applyNow = () => {
+        // topic content
+        doc.querySelectorAll("ft-reader-topic-content").forEach((el) => {
+            injectImportsIntoShadow(el, "ft-topic-content-external-imports", [
+                "https://erictanner153.github.io/jsfile/compiled-styles/topic.css",
+            ]);
+        });
+
+        // topic title
+        doc.querySelectorAll("ft-reader-topic-title").forEach((el) => {
+            injectImportsIntoShadow(el, "ft-topic-title-external-imports", [
+                "https://erictanner153.github.io/jsfile/compiled-styles/title.css",
+            ]);
+        });
+    };
+
+    // Run once
+    applyNow();
+    console.log('load script ran');
+    // Re-apply on navigation / dynamic loads
+    const obsKey = "__ft_external_css_imports_observer__";
+    if (!doc[obsKey]) {
+        const target =
+            doc.documentElement || doc.body || (container && container.parentNode);
+        if (!target) return;
+
+        doc[obsKey] = new MutationObserver(() => applyNow());
+        doc[obsKey].observe(target, {childList: true, subtree: true});
+    }
 }

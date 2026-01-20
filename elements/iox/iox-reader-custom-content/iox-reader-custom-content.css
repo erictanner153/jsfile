@@ -1,0 +1,15 @@
+.background-image {
+    width: 100%;
+    height: 100%;
+    background-size: 50%;
+    background-repeat: repeat;
+    opacity: 0.05;
+}
+
+.background-image.light-theme {
+    background-image: url(https://siemens-industrialedge-staging.fluidtopics.net/portal-asset/deprecated);
+}
+
+.background-image.dark-theme {
+    background-image: url(https://siemens-industrialedge-staging.fluidtopics.net/portal-asset/deprecated-inverted);
+}

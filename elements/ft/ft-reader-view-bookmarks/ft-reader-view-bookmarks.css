@@ -1,0 +1,31 @@
+a {
+    color: var(--ft-theme-secondary);
+}
+
+a:hover,
+a:focus {
+    text-decoration: none;
+}
+
+.listtopicbookmarks-item-title {
+    font-weight: normal;
+}
+
+.listtopicbookmarks-breadcrumb,
+.listtopicbookmarks-item-title {
+    color: var(--ft-custom-reader-content-text)!important;
+}
+
+.listtopicbookmarks-item {
+    /*border-color: var(--ft-custom-reader-content-text)!important;*/
+    background-color: var(--ft-custom-reader-related-documents-result-background
+    )!important;
+    padding: 16px;
+    border: none;
+    border-radius: none;
+}
+
+.listtopicbookmarks-item:hover {
+    background-color: var(--ft-custom-reader-related-documents-result-background-hover
+    )!important;
+}

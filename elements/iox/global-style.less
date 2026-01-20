@@ -1,0 +1,398 @@
+.header-inner-wrapper {
+    color: red;
+}
+
+.component-aside {
+    box-shadow: none !important;
+}
+
+.fluid-aside-content {
+    background: white;
+    box-shadow: none;
+    border-right: 2px solid #D9D9DE;
+}
+
+
+ft-slotted-tabs {
+  ft-user-assets-count,
+  ft-localized-label {
+    display: block;
+    padding-left: 4px;
+    padding-right: 4px;
+    font-size: 12px;
+  }
+}
+
+
+
+/*
+.fluid-aside-tabs {
+	background: #F3F3F0 !important;
+
+  	.ft-btn {
+  		background: #F3F3F0 !important;
+      	border-bottom-width: 0px !important;
+      	border-top-width: 0px !important;
+  	}
+
+  	.fluid-aside-active-tab {
+  		background: white !important;
+      	border-left: 3px solid #007993 !important;
+      	&:focus {
+      		outline: none !important;
+       	}
+  	}
+}
+*/
+.reader-aside-toc-search-in-publication {
+    background: white !important;
+}
+
+.coverbar  {
+    box-shadow: none !important;
+    border-bottom: 1px solid #D9D9DE;
+}
+
+.searchpage-search-tools {
+    background: white !important;
+    border-bottom: 2px solid #D9D9DE;
+}
+
+/*.searchpage-component .component-content {
+	background: #cecec8;
+}*/
+
+.searchresult {
+//background: #F2F2EF;
+    background: white;
+    box-shadow: 0 3px 15px rgba(0,0,0,.15);
+  
+    padding: 0px;
+    margin-bottom: 1em !important;
+    border-radius: 4px !important;
+
+    .searchresult-excerpt {
+        color: #5E5E75;
+    }
+
+    .searchresult-title {
+        a {
+            color: #000028;
+            &:hover {
+                color: #007993;
+            }
+        }
+    }
+    /*
+       .metadata {
+            border-color: #007993 !important;
+          color: #007993 !important;
+       }
+    */
+    .searchresult-breadcrumb + .searchresult-excerpt {
+        padding-bottom: .75rem;
+    }
+
+    .searchresult-breadcrumb .searchresult-breadcrumb-topic:before {
+        padding: 0 0.5em !important;
+    }
+
+    .searchresult-extra-infos {
+        padding: 0 1.5rem 1rem;
+        background: #f3f3f0;
+    }
+
+    .searchresult-main-infos {
+        padding: 1rem 1.5rem;
+    }
+}
+
+.searchresults-back-button {
+    display: flex;
+    height: 100%;
+    justify-content: center;
+    align-items: center;
+}
+
+.searchresults-back-button i,
+.searchresults-back-button span {
+    color: white;
+}
+
+/* Fix found search text in topics */
+
+*::part(kwicmatch) {
+    color: var(--ft-custom-reader-content-text)!important;
+    background-color: var(--ft-custom-highlight-found-search-text)!important;
+}
+
+/* Styles for modal overlays */
+
+.drawerlasagna-layer-header {
+    background: var(--ft-custom-metadata-background-color) !important;
+    border-bottom: solid 1px var(--ft-custom-reader-content-text) !important;
+}
+
+.drawerlasagna-layer-title {
+    color: var(--ft-custom-reader-content-text) !important;
+}
+
+.drawerlasagna-layer-close-button svg .cls-1 {
+    fill: var(--ft-custom-metadata-background-color) !important;
+}
+
+.drawerlasagna-layer-close-button svg .cls-2 {
+    stroke: var(--ft-custom-reader-content-text) !important;
+}
+
+.drawerlasagna-layer-close-button .ft-icon-close::before {
+    color: var(--ft-custom-reader-content-text) !important;
+}
+
+.drawerlasagna-layer-close-button .ft-icon-close:hover::before {
+    color: #60adbd !important;
+}
+
+.drawerlasagna-layer-content {
+    background-color: var(--ft-custom-reader-content-background);
+    color: var(--ft-custom-reader-content-text);
+}
+
+.drawerlasagna-admin .ft-popup-content {
+    background-color: var(--ft-custom-reader-content-background, #fff);
+}
+
+.addtopersonalbook-tree-root-level {
+    background-color: var(--ft-custom-item-collection);
+}
+
+.checkbox {
+    color: var(--ft-custom-reader-content-text);
+}
+
+.collections-item .collections-selected-info-label {
+    background-color: var(--ft-custom-metadata-background-color);
+    color: var(--ft-custom-reader-content-text);
+}
+
+.collections-item {
+    background-color: var(--ft-custom-item-collection);
+    border-color: var(--ft-custom-reader-content-text);
+}
+
+.collections-item:hover {
+    background-color: var(--ft-custom-item-collection-hover);
+    border-color: #60adbd;
+}
+
+.collections-item-title {
+    color: var(--ft-custom-reader-content-text);
+}
+
+.tox .tox-edit-area__iframe {
+    background-color: #fff!important;
+}
+
+.fileupload-container button {
+    color: #60adbd;
+}
+
+button.pbk-context-menu-create-pbk-button {
+    color: #60adbd !important;
+}
+
+button.pbk-context-menu-create-pbk-button:hover {
+    color: #007993 !important;
+}
+
+.ft-btn-cancel {
+    color: var(--ft-custom-reader-content-text);
+    border: 1px solid var(--ft-custom-reader-content-text)!important;
+}
+
+.ft-popup .ft-popup-buttons-area .ft-btn-cancel:hover {
+    color: #60adbd;
+    border: 1px solid #60adbd;
+}
+
+.ft-popup-content {
+    background-color: var(--ft-custom-reader-content-background);
+    border: 1px solid var(--ft-custom-reader-content-text);
+    color: var(--ft-custom-reader-content-text);
+}
+
+.ft-label-form select.pbk-context-menu-pbk-selection {
+    width: auto;
+    background-color: var(--ft-custom-item-collection);
+    color: var(--ft-custom-reader-content-text);
+}
+
+.FT-application-content input[type="text"],
+.FT-application-content input[type="number"],
+.FT-application-content input[type="password"],
+.FT-application-content input[type="search"],
+.FT-application-content input[type="email"],
+.FT-application-content input[type="url"],
+.FT-application-content select,
+.FT-application-content textarea {
+
+    background-color: var(--ft-custom-metadata-background-color);
+    color: var(--ft-custom-reader-content-text);
+}
+
+.FT-application-content input[type="text"]::placeholder,
+.FT-application-content input[type="number"]::placeholder,
+.FT-application-content input[type="password"]::placeholder,
+.FT-application-content input[type="search"]::placeholder,
+.FT-application-content input[type="email"]::placeholder,
+.FT-application-content input[type="url"]::placeholder,
+.FT-application-content textarea::placeholder {
+
+    color: var(--ft-custom-reader-content-text);
+}
+
+/*Fix search page because of dark mode */
+.search-aside-filters-container .checkbox,
+.searchpage-sub-search-bar-left-wrapper,
+.search-actions-section .metadata-label,
+.search-actions-section .metadata-values,
+.mylibrary-searches-section .metadata-label,
+.mylibrary-searches-section .metadata-values,
+.mylibrary-item-content .metadata-label,
+.mylibrary-item-content .metadata-values {
+    color: #000;
+}
+
+.copytoclipboard-button {
+    color: #fff;
+}
+
+.copytoclipboard .copytoclipboard-container .copytoclipboard-input,
+.copytoclipboard .copytoclipboard-container .copytoclipboard-input[readonly] {
+    color: var(--ft-custom-reader-content-text) !important;
+}
+
+.searchresults-preview-container .topic-viewer {
+    background-color: transparent!important;
+}
+
+/* Fix found search text in topics */
+
+.highlight-html-match {
+    color: var(--ft-custom-reader-content-text)!important;
+    background-color: var(--ft-custom-highlight-found-search-text)!important;
+}
+
+/****************************/
+
+/*.readercontent-container.component-content-inner-wrapper {
+ 	background: #cecec8 !important;
+}*/
+
+.readercontent-container.component-content-inner-wrapper .readercontent-column:not(.readercontent-full-width) {
+    margin-left: 2em;
+    margin-right: 2em;
+}
+
+.readercontent-container.component-content-inner-wrapper .readercontent-column {
+    padding-top: 2em;
+}
+
+.readercontent-container.component-content-inner-wrapper .readercontent-column .readercontent-papyrus-sheet {
+    border-radius: 0.25rem;
+    border: 1px solid #c8c8c2;
+    box-shadow: 0 3px 15px rgba(0,0,0,.15);
+}
+
+.ft-popup-header {
+    background: #F2F2EF !important;
+    border-bottom-width: 1px !important;
+}
+
+.notificationcenter-notification {
+    &.notificationcenter-info {
+        background: #F2F2EF !important;
+        color: #000028 !important;
+        border-radius: 4px !important;
+        box-shadow: 0 3px 15px rgba(0,0,0,.15);
+    }
+
+    .ft-btn {
+        color: #000028 !important;
+    }
+}
+/*
+.coverbar-metadata {
+	.metadata {
+  		border-color: #007993 !important;
+    	color: #007993 !important;
+ 		background: transparent;
+  	}
+}
+*/
+blockquote {
+    margin: 1.5rem 0px;
+    padding: 0.8rem 1rem;
+    border-radius: 4px;
+    background: rgba(170, 170, 150, 0.07);
+    border-left: 4px solid rgba(0, 0, 40, 0.376)
+}
+
+.header-actions.header-page-actions {
+    justify-content: flex-start;
+}
+
+/* breadcrumb navigation styles */
+.coverbar-title {
+    color: white;
+    font-size: 12px;
+    font-weight: 700;
+}
+/*.breadcrumb-item,
+.breadcrumb-separator {
+}*/
+
+/*.breadcrumb-item {
+}*/
+.breadcrumb-item.non-reader-page {
+    cursor: pointer;
+    text-decoration: underline;
+}
+.breadcrumb-item.non-reader-page:hover {
+    color: var(--ft-theme-tertiary);
+}
+
+.tree a.tree-node-link {
+    line-height: 1.25;
+}
+
+ft-slotted-modal-content {
+    color: var(--ft-custom-reader-content-text) !important;
+}
+
+/* Test scrollbar effects */
+/* Target the scrollbar track */
+::-webkit-scrollbar {
+    width: 6px;
+}
+
+/* Handle (thumb) */
+::-webkit-scrollbar-thumb {
+    background: #545469;
+    border-radius: 6px;
+}
+
+/* Track background */
+::-webkit-scrollbar-track {
+    background: var(--ft-custom-item-collection-hover);
+}
+
+/* Firefox */
+* {
+    scrollbar-width: thin;
+    scrollbar-color: #545469 var(--ft-custom-item-collection-hover);
+}
+
+.coverbar .coverbar-actions .ft-btn:hover {
+    color: #00CCCC;
+}
