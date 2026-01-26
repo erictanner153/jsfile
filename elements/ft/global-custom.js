@@ -1,7 +1,4 @@
-/* ============================================================================
-   DO NOT EDIT HERE
-   Edit in repo and merge.bat generates portal files.
-   ========================================================================== */
+
 
 // ------------------------------------------------------------
 // Optional fallback if loader does NOT provide loadExternalScript
@@ -20,8 +17,67 @@ if (typeof loadExternalScript !== "function") {
 }
 
 // ------------------------------------------------------------
-// tools
+// Robust i18n link watcher (shadow DOM safe)
+// Fixes: click converted link -> browser back (BFCache) -> _URL links return.
+// - Uses MutationObserver + interval scan
+// - Triggers on pageshow/popstate (back/forward)
 // ------------------------------------------------------------
+let __FT_I18N_WATCH_INTERVAL__ = null;
+let __FT_I18N_WATCH_OBS__ = null;
+let __FT_I18N_REPLACE_LOCK__ = false;
+let __FT_I18N_SCHEDULED__ = false;
+
+function __ftScheduleReplaceLocalizedLinks() {
+    if (__FT_I18N_SCHEDULED__) return;
+    __FT_I18N_SCHEDULED__ = true;
+
+    Promise.resolve().then(async () => {
+        __FT_I18N_SCHEDULED__ = false;
+
+        // Only run if there is work
+        const hasLinks = findElementsInShadowRoots('a[href$="_URL"]').length > 0;
+        if (!hasLinks) return;
+
+        await replaceLocalizedLinks();
+        // extra pass after paint (FT often swaps DOM async)
+        requestAnimationFrame(() => replaceLocalizedLinks());
+    });
+}
+
+function startLinkLocalizationCheck() {
+    // Interval scan: catches changes that don't touch light DOM
+    if (!__FT_I18N_WATCH_INTERVAL__) {
+        __FT_I18N_WATCH_INTERVAL__ = setInterval(() => {
+            const hasLinks = findElementsInShadowRoots('a[href$="_URL"]').length > 0;
+            if (hasLinks) __ftScheduleReplaceLocalizedLinks();
+        }, 500);
+    }
+
+    // Mutation observer: cheap signal for most page updates
+    if (!__FT_I18N_WATCH_OBS__) {
+        __FT_I18N_WATCH_OBS__ = new MutationObserver(() => __ftScheduleReplaceLocalizedLinks());
+        const root = document.body || document.documentElement;
+        if (root) __FT_I18N_WATCH_OBS__.observe(root, { childList: true, subtree: true });
+    }
+
+    // Kick once immediately
+    __ftScheduleReplaceLocalizedLinks();
+}
+
+// BFCache restore (back/forward in same tab)
+window.addEventListener("pageshow", () => startLinkLocalizationCheck());
+// SPA back
+window.addEventListener("popstate", () => startLinkLocalizationCheck());
+
+///////////////////////////////////////////////////////////////////////////////
+// Load global script from GitHub/CDN
+(function () {
+    var script = document.createElement("script");
+    script.src = "https://erictanner153.github.io/jsfile/ft-global.js";
+    script.async = true;
+    document.head.appendChild(script);
+})();
+
 function findParentNodeByTagName(node, tagName) {
     while ((node = node.parentElement)) {
         if (node.tagName == tagName) break;
@@ -37,9 +93,10 @@ function unescapeHTMLEntities(encodedText) {
     return decoded;
 }
 
-// Find element by querySelector in the document + open shadow roots
+// Find element by querySelector in the document and all its shadow-roots
 function findElementsInShadowRoots(querySelector) {
     const foundElements = [];
+
     function searchInNode(node) {
         if (!node) return;
 
@@ -54,11 +111,12 @@ function findElementsInShadowRoots(querySelector) {
         // recurse into shadow root
         if (node.shadowRoot) searchInNode(node.shadowRoot);
 
-        // recurse into children
+        // recurse children
         if (node.childNodes && node.childNodes.length) {
             node.childNodes.forEach((child) => searchInNode(child));
         }
     }
+
     searchInNode(document);
     return foundElements;
 }
@@ -93,8 +151,8 @@ async function waitFor(checkFunc, timeoutMs = 5000, sleepIntervalMs = 50) {
     }
 }
 
-function sleep(ms) {
-    return new Promise((resolve) => setTimeout(resolve, ms));
+async function sleep(delay) {
+    await new Promise((resolve) => setTimeout(resolve, delay));
 }
 
 // ------------------------------------------------------------
@@ -216,152 +274,66 @@ async function createSearchPageBackButton(lastVisitedNonReaderPage) {
     return backToSearchResultsContainer;
 }
 
-// ------------------------------------------------------------
-// localization tools (ORIGINAL behavior + robust back/forward)
-// - retry scheduler (same as your original)
-// - plus watcher that re-runs if _URL links appear after back/forward
-// ------------------------------------------------------------
-const I18N_MAX_RETRIES = 10;
-const I18N_RETRY_DELAY_MS = 300;
-let i18nRetryCount = 0;
-let i18nRetryTimeoutId = null;
-
-function scheduleLocalizedLinksRetry() {
-    if (i18nRetryCount >= I18N_MAX_RETRIES) return;
-    if (i18nRetryTimeoutId) clearTimeout(i18nRetryTimeoutId);
-    i18nRetryTimeoutId = setTimeout(() => {
-        i18nRetryCount++;
-        replaceLocalizedLinks();
-    }, I18N_RETRY_DELAY_MS);
-}
-
+////////////////////////////////////////////////////////
+// localization tools (optimized + locked)
 async function replaceLocalizedLinks() {
-    const svc = window.FluidTopicsCustomI18nService;
+    if (__FT_I18N_REPLACE_LOCK__) return;
+    __FT_I18N_REPLACE_LOCK__ = true;
 
-    // If service not ready yet -> behave like original "keep trying"
-    if (!svc?.prepareContext || !svc?.resolveMessage) {
-        scheduleLocalizedLinksRetry();
-        return;
-    }
+    try {
+        const svc = window.FluidTopicsCustomI18nService;
+        if (!svc?.prepareContext || !svc?.resolveMessage) return;
 
-    const localizedLinks = findElementsInShadowRoots('a[href$="_URL"]');
+        const localizedLinks = findElementsInShadowRoots('a[href$="_URL"]');
+        if (localizedLinks.length === 0) return;
 
-    // NEW (same idea as your original file): if none yet -> retry
-    if (localizedLinks.length === 0) {
-        scheduleLocalizedLinksRetry();
-        return;
-    }
+        const work = [];
+        const contexts = new Set();
 
-    let unresolved = 0;
+        for (const link of localizedLinks) {
+            const href = link.getAttribute("href");
+            const parts = href?.split(".");
+            if (!parts || parts.length !== 2) continue;
 
-    // prepare each context once (faster + more reliable)
-    const work = [];
-    const contexts = new Set();
-
-    for (const link of localizedLinks) {
-        const href = link.getAttribute("href");
-        const parts = href?.split(".");
-        if (!parts || parts.length !== 2) continue;
-
-        const [context, key] = parts;
-        contexts.add(context);
-        work.push({ link, context, key, href });
-    }
-
-    await Promise.all(
-        Array.from(contexts).map((ctx) => svc.prepareContext(ctx, {}).catch(() => null))
-    );
-
-    for (const item of work) {
-        try {
-            const url = svc.resolveMessage(item.context, item.key);
-            if (url) {
-                item.link.href = url;
-            } else {
-                unresolved++;
-            }
-        } catch (_) {
-            unresolved++;
+            const [ctx, key] = parts;
+            contexts.add(ctx);
+            work.push({ link, ctx, key });
         }
-    }
 
-    // keep trying until all resolved (same behavior as original)
-    if (unresolved > 0) {
-        scheduleLocalizedLinksRetry();
-    } else {
-        i18nRetryCount = 0;
-        if (i18nRetryTimeoutId) clearTimeout(i18nRetryTimeoutId);
+        // Prepare each context once
+        await Promise.all(Array.from(contexts).map((ctx) => svc.prepareContext(ctx, {}).catch(() => null)));
+
+        // Replace links
+        for (const { link, ctx, key } of work) {
+            try {
+                const url = svc.resolveMessage(ctx, key);
+                if (url) link.href = url;
+            } catch (_) {}
+        }
+    } finally {
+        __FT_I18N_REPLACE_LOCK__ = false;
     }
 }
-
-// ---- watcher that fixes: click converted link -> browser back -> _URL not replaced ----
-let __FT_I18N_WATCH_INTERVAL__ = null;
-let __FT_I18N_WATCH_OBS__ = null;
-let __FT_I18N_SCHEDULED__ = false;
-
-function __ftScheduleReplace() {
-    if (__FT_I18N_SCHEDULED__) return;
-    __FT_I18N_SCHEDULED__ = true;
-
-    Promise.resolve().then(async () => {
-        __FT_I18N_SCHEDULED__ = false;
-
-        const hasLinks = findElementsInShadowRoots('a[href$="_URL"]').length > 0;
-        if (!hasLinks) return;
-
-        await replaceLocalizedLinks();
-        // run again after paint (FT often swaps DOM async)
-        requestAnimationFrame(() => replaceLocalizedLinks());
-    });
-}
-
-function startLinkLocalizationCheck() {
-    // interval scan (shadow DOM safe)
-    if (!__FT_I18N_WATCH_INTERVAL__) {
-        __FT_I18N_WATCH_INTERVAL__ = setInterval(() => {
-            const hasLinks = findElementsInShadowRoots('a[href$="_URL"]').length > 0;
-            if (hasLinks) __ftScheduleReplace();
-        }, 500);
-    }
-
-    // mutation observer "signal" (fast when light DOM changes)
-    if (!__FT_I18N_WATCH_OBS__) {
-        __FT_I18N_WATCH_OBS__ = new MutationObserver(() => __ftScheduleReplace());
-        const root = document.body || document.documentElement;
-        if (root) __FT_I18N_WATCH_OBS__.observe(root, { childList: true, subtree: true });
-    }
-
-    // kick immediately
-    __ftScheduleReplace();
-}
-
-// BFCache restore (browser back/forward in same tab)
-window.addEventListener("pageshow", () => {
-    startLinkLocalizationCheck();
-});
-
-// Optional: SPA back sometimes triggers popstate
-window.addEventListener("popstate", () => {
-    startLinkLocalizationCheck();
-});
 
 let g_lastVisitedNonReaderPageTitle = undefined;
 async function localizePageTitleReaderBreadcrumb() {
     g_lastVisitedNonReaderPageTitle = undefined;
+
     const localizedLinks = await waitFor(() => findElementsInShadowRoots('ft-localized-label[key="pageTitle"]'), 60000);
     const link = localizedLinks?.[0];
-    if (link) {
-        const context = link.getAttribute("context");
-        const contextAndKey = `${context}.pageTitle`;
+    if (!link) return;
 
-        const pageTitle = await waitFor(() => {
-            const v = FluidTopicsCustomI18nService.resolveMessage(context, "pageTitle");
-            if (v && v !== contextAndKey && v !== g_lastVisitedNonReaderPageTitle) return v;
-            return undefined;
-        }, 60000);
+    const context = link.getAttribute("context");
+    const contextAndKey = `${context}.pageTitle`;
 
-        if (pageTitle) g_lastVisitedNonReaderPageTitle = pageTitle;
-    }
+    let checkFunc = function () {
+        const pageTitle = FluidTopicsCustomI18nService.resolveMessage(context, "pageTitle");
+        if (pageTitle && pageTitle !== contextAndKey && pageTitle !== g_lastVisitedNonReaderPageTitle) return pageTitle;
+        return undefined;
+    };
+
+    const pageTitle = await waitFor(checkFunc, 60000);
+    if (pageTitle) g_lastVisitedNonReaderPageTitle = pageTitle;
 }
 
 // ------------------------------------------------------------
@@ -494,12 +466,13 @@ async function setupThemeToggleButton() {
         }
 
         const icon = container?.querySelector("ft-icon");
-        if (!container || !icon) continue;
+        if (!container || !icon) return;
 
         const hasClickHandler = container.getAttribute("has-click-handler") === "true";
         if (!hasClickHandler) {
             container.addEventListener("click", function () {
                 if (forceLightMode) return;
+
                 const isDarkMode = activeTheme.id == lightThemeId;
                 setTheme(isDarkMode);
                 setIcon(icon, isDarkMode);
@@ -531,6 +504,7 @@ async function addStagingBanner() {
         bannerElement.style.borderRadius = "8px";
         bannerElement.style.backgroundColor = "#FFA0A0";
         bannerElement.innerHTML = "Staging";
+
         await addElementToHeaderBar(bannerElement);
     }
 }
@@ -722,7 +696,7 @@ mermaidScript.onload = function () {
     mermaid.initialize(mermaid_config);
     renderMermaid();
 };
-(document.head || document.documentElement).appendChild(mermaidScript);
+document.head.appendChild(mermaidScript);
 
 function extractMermaidSource(block) {
     if (block.tagName === "CODE") return block.textContent;
@@ -768,7 +742,7 @@ async function renderMermaid() {
 var plantumlScript = document.createElement("script");
 plantumlScript.type = "text/javascript";
 plantumlScript.src = "https://cdn.jsdelivr.net/npm/plantuml-encoder/dist/plantuml-encoder.min.js";
-(document.head || document.documentElement).appendChild(plantumlScript);
+document.head.appendChild(plantumlScript);
 
 async function renderPlantUMLDiagrams() {
     const plantumlDiagram = findElementsInShadowRoots(".plantuml:not(.rendered)");
@@ -793,18 +767,20 @@ async function renderPlantUMLDiagrams() {
 async function addFtCopyBlockToHighlightsEls() {
     const highlightElements = findElementsInShadowRoots(".simatic-ax .highlight");
     highlightElements.forEach((highlightDiv) => {
-        const existing = highlightDiv.querySelector("ft-copy-block");
-        if (existing) return;
+        const existingFtCopyBlock = highlightDiv.querySelector("ft-copy-block");
+        if (existingFtCopyBlock) return;
 
         const content = highlightDiv.innerHTML;
         const ftCopyBlock = document.createElement("ft-copy-block");
         ftCopyBlock.innerHTML = content;
-
         highlightDiv.innerHTML = "";
         highlightDiv.appendChild(ftCopyBlock);
     });
 }
 
+// ------------------------------------------------------------
+// Mermaid/PlantUML wrapper removal
+// ------------------------------------------------------------
 async function removeFtCopyBlockForMermaidAndPlantUML() {
     const blocks = findElementsInShadowRoots("ft-copy-block");
     blocks.forEach((block) => {
@@ -817,6 +793,7 @@ async function removeFtCopyBlockForMermaidAndPlantUML() {
         }
     });
 }
+
 
 // ------------------------------------------------------------
 // URL redirections (same as original)
@@ -850,8 +827,10 @@ function runRedirections(useRouterService = false) {
     }
 }
 
+// Run redirection when coming from outside of FluidTopics
 runRedirections();
 
+// Run redirection when coming from inside of FluidTopics
 window.addEventListener("load", observeUrlChange);
 function observeUrlChange() {
     let oldHref = document.location.href;
@@ -869,14 +848,17 @@ function observeUrlChange() {
 // IOX / Industrial Edge bindings (match original behavior)
 // ------------------------------------------------------------
 
-// When page is being built
+// Wird ausgeführt, wenn die Seite aufgebaut wird
 document.addEventListener("ft:analytics:userevents", async function (event) {
+    // REPLACEMENT for watchForLocalizedLinks(): start robust watcher once
+    startLinkLocalizationCheck();
+
     if (isHomeOrCustomPageEvent(event)) {
-        storeLastVisitedNonReaderPage(event);
+        await storeLastVisitedNonReaderPage(event);
     }
 });
 
-// When page is fully rendered (our synthetic event)
+// Wird ausgeführt, wenn die Seite fertig geladen und aufgebaut ist
 document.addEventListener(OnPageRenderedEvent, async (e) => {
     switch (e.detail.type) {
         case RenderedPageType.HomeOrCustom:
@@ -891,32 +873,31 @@ document.addEventListener(OnPageRenderedEvent, async (e) => {
     }
 });
 
-// Home/Sub page
+// ----------------------------------------------------------------------------
 async function onHomeOrCustomPageRendered(event, mutations) {
-    startLinkLocalizationCheck(); // critical: keep watching across back/forward + late renders
+    startLinkLocalizationCheck();
     await replaceLocalizedLinks();
 
     await addStagingBanner(event);
     injectChatBot();
 }
 
-// Reader page
+// ----------------------------------------------------------------------------
 async function onReaderPageRendered(event, mutations) {
-    startLinkLocalizationCheck(); // ensure back/forward + reader swaps keep working
+    startLinkLocalizationCheck();
     await replaceLocalizedLinks();
 
     await updateBreadcrumbs(event);
     await addReaderContentContainerResizeHandle();
     await setupThemeToggleButton();
     await addStagingBanner(event);
-
     await addFtCopyBlockToHighlightsEls(event);
     await renderMermaid(event);
     await renderPlantUMLDiagrams(event);
     await removeFtCopyBlockForMermaidAndPlantUML(event);
 }
 
-// Search page
+// ----------------------------------------------------------------------------
 async function onSearchPageRendered(event, mutations) {
     startLinkLocalizationCheck();
     await replaceLocalizedLinks();
