@@ -1,7 +1,7 @@
 {
   "name": "jsfile",
   "version": "1.0.0",
-  "main": "function/ft-global.js",
+  "main": "dev/ft-global.js",
   "scripts": {
     "build:css": "sass styles:compiled-styles",
     "watch:css": "sass --watch styles:compiled-styles",
@@ -9,9 +9,9 @@
     "watch:less": "less-watch-compiler styles compiled-styles --watch --clean-css",
     "build:global-css-iox": "sass elements/iox/global-style.scss elements/iox/global-style.css",
     "watch:global-css-iox": "sass --watch elements/iox/global-style.scss elements/iox/global-style.css",
-    "build:global-css-fa-less": "lessc elements/fa/global-style.less elements/fa/global-style.less",
+    "build:global-css-fa-less": "lessc dev/fa-global-style.less elements/fa/fa-global-style.less",
     "watch:global-css-fa-less": "less-watch-compiler elements/fa elements/fa",
-    "build:global-css-iox-less": "lessc elements/iox/global-style.less elements/iox/global-style.css",
+    "build:global-css-iox-less": "lessc dev/iox-global-style.less elements/iox/global-style.css",
     "watch:global-css-iox-less": "less-watch-compiler elements/iox elements/iox"
   },
   "keywords": [],

@@ -75,7 +75,7 @@ async function waitForMapFields(timeoutMs) {
 
 async function getNode(selectorOrId) {
     // Prefer loader helpers if available (shadow DOM)
-    if (typeof waitForSelector === "function") {
+    if (typeof waitForSelector === "dev") {
         const el = await waitForSelector(selectorOrId, 60000).catch(() => null);
         if (el) return el;
     }

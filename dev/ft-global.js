@@ -143,7 +143,7 @@
     }
 
     /* ---------------------------------------------
-       Expose test function so you can run it manually
+       Expose test dev so you can run it manually
     ---------------------------------------------- */
     window.FTGLOBAL = window.FTGLOBAL || {};
     window.FTGLOBAL.removeFtCopyBlockForMermaidAndPlantUML = removeFtCopyBlockForMermaidAndPlantUML;

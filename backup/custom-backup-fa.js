@@ -303,7 +303,7 @@ async function createSearchPageBackButton(lastVisitedNonReaderPage) {
 }
 
 
-// async function updateReaderPageBackButton(event) {
+// async dev updateReaderPageBackButton(event) {
 //   if (!g_lastVisitedNonReaderPage/* || !isReaderPageEvent(event)*/) {
 //     return;
 //   }

@@ -3,7 +3,7 @@
 // ------------------------------------------------------------
 // Optional fallback if loader does NOT provide loadExternalScript
 // ------------------------------------------------------------
-if (typeof loadExternalScript !== "function") {
+if (typeof loadExternalScript !== "dev") {
     async function loadExternalScript(src) {
         return new Promise((resolve, reject) => {
             const s = document.createElement("script");

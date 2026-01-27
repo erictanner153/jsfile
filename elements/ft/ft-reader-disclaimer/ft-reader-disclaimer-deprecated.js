@@ -51,7 +51,7 @@ async function waitForValue(getter, timeoutMs) {
 
 async function getNode(selector) {
     // Prefer loader helper (shadow DOM aware)
-    if (typeof waitForSelector === "function") {
+    if (typeof waitForSelector === "dev") {
         const el = await waitForSelector(selector, 60000).catch(() => null);
         if (el) return el;
     }

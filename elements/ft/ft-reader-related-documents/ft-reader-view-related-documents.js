@@ -52,9 +52,9 @@ async function waitForMetadata(timeout = 60000) {
 
 function applyCount(count, reason) {
     const nodes =
-        (typeof deepQuerySelectorAll === "function"
+        (typeof deepQuerySelectorAll === "dev"
                 ? deepQuerySelectorAll(".count-text", document)
-                : [typeof deepQuerySelector === "function"
+                : [typeof deepQuerySelector === "dev"
                     ? deepQuerySelector(".count-text", document)
                     : null]
         ).filter(Boolean);
@@ -75,7 +75,7 @@ function watchRerenders(rerun) {
         clearTimeout(t);
         t = setTimeout(() => {
             // If any node exists but is empty -> rerun
-            const nodes = (typeof deepQuerySelectorAll === "function")
+            const nodes = (typeof deepQuerySelectorAll === "dev")
                 ? deepQuerySelectorAll(".count-text", document).filter(Boolean)
                 : [];
 

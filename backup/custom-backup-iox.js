@@ -16,14 +16,14 @@
 ///////////////////////////////////////////////////////////////////////////////
 // tools
 // Load global script from GitHub/CDN
-//function loadGlobalJavascriptFile () {
+//dev loadGlobalJavascriptFile () {
 // var script = document.createElement('script');
 //    script.src = "https://erictanner153.github.io/jsfile/function/ft-global.js";
 //    script.async = true;
 //    document.head.appendChild(script);
 //}
 //loadGlobalJavascriptFile();
-//function loadGlobalCssFile() {
+//dev loadGlobalCssFile() {
 //  const link = document.createElement('link');
 //  link.rel = 'stylesheet';
 //  link.href = 'https://erictanner153.github.io/jsfile/compiled-styles/topic.css'; // change to your CSS URL
@@ -235,7 +235,7 @@ async function createSearchPageBackButton(lastVisitedNonReaderPage) {
     backToSearchResultsContainer.appendChild(backButton);
     return backToSearchResultsContainer;
 }
-// async function updateReaderPageBackButton(event) {
+// async dev updateReaderPageBackButton(event) {
 //   if (!g_lastVisitedNonReaderPage/* || !isReaderPageEvent(event)*/) {
 //     return;
 //   }
